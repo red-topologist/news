@@ -2,94 +2,86 @@ import feedparser
 import datetime
 import re
 from newspaper import Article
-from googletrans import Translator
-import nltk
 
-# 요약 기능을 위해 필요한 데이터 다운로드 (최초 1회 실행됨)
-nltk.download('punkt')
-
-def get_article_summary(url):
+def get_article_content(url):
+    """
+    기사 URL을 타고 들어가 본문을 추출하고, 
+    앞부분(핵심 리드문)을 약 300~400자 정도로 잘라서 반환합니다.
+    """
     try:
-        article = Article(url, language='en') # 일단 영어로 설정 (국내뉴스도 처리 가능)
+        article = Article(url, language='ko')
         article.download()
         article.parse()
-        article.nlp() # 자연어 처리로 핵심 문장 추출
-        return article.summary
-    except:
+        
+        # 본문 가져오기 (없으면 공란)
+        text = article.text.strip()
+        
+        if len(text) < 50: # 본문 추출 실패 시
+            return ""
+
+        # 가독성을 위해 문단 정리 (줄바꿈 과다 제거)
+        text = re.sub(r'\n+', ' ', text)
+        
+        # 핵심 내용인 앞부분 350자 추출 (문장 중간에 끊기지 않게 마침표 처리)
+        summary = text[:350]
+        if "." in summary[300:]: # 300자 이후 첫 마침표에서 끊기
+            summary = summary[:300] + summary[300:].split('.')[0] + "."
+        else:
+            summary += "..."
+            
+        return summary
+    except Exception as e:
         return ""
 
-def clean_text(text):
-    # 번역투 및 불필요한 공백 제거
-    text = text.replace(" .", ".").replace(" ,", ",")
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text
-
-def fetch_and_format_news():
-    translator = Translator()
-    
-    # 1. 권위 있는 소스 선정 (실제 기사 링크를 얻기 위해 RSS를 '주소록'으로만 활용)
+def fetch_korean_news():
+    # 1. 국내 권위 있는 뉴스 소스 (번역 불필요)
     sources = {
-        "🤖 인공지능 (AI)": "https://www.technologyreview.com/feed/", # MIT Tech Review
-        "🏛️ 정치": "https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml", # NYT Politics
-        "🏥 사회": "https://www.yna.co.kr/rss/society.xml", # 연합뉴스 사회
-        "🎓 교육": "https://www.hangyo.com/rss/allArticle.xml" # 한국교육신문
+        "🤖 인공지능 (AI)": "http://www.aitimes.com/rss/allArticle.xml", # 국내 AI 전문지 1위
+        "🏛️ 정치": "https://www.yna.co.kr/rss/politics.xml", # 연합뉴스 (팩트 위주)
+        "🏥 사회": "https://www.yna.co.kr/rss/society.xml", # 연합뉴스
+        "🎓 교육": "http://www.hangyo.com/rss/allArticle.xml" # 한국교육신문 (교총)
     }
     
     now = datetime.datetime.now()
     today_str = now.strftime("%Y-%m-%d")
     today_kr = now.strftime("%Y년 %m월 %d일(%a)")
     
-    # 2. 헤더 작성 (요청하신 멘트 그대로)
-    markdown = f"---\ndate: {today_str}\ntags: [뉴스, 요약, 자동화]\n---\n\n"
-    markdown += f"# 📅 {today_kr} 분야별 최신 뉴스 요약\n\n"
-    markdown += f"현재 시점을 기준으로 인공지능(AI), 정치, 사회, 교육 분야의 최신 주요 뉴스를 정리해 드립니다. 특히 급변하는 국제 정세와 기술 발전의 흐름을 중점적으로 파악했습니다.\n\n"
+    # 2. 마크다운 헤더 작성
+    markdown = f"---\ndate: {today_str}\ntags: [뉴스, 스크랩, {today_str}]\n---\n\n"
+    markdown += f"# 📅 {today_kr} 분야별 핵심 뉴스 브리핑\n\n"
+    markdown += f"국내 주요 언론사의 기사 원문을 바탕으로 정리된 최신 뉴스입니다. 제목을 클릭하면 원문을 확인하실 수 있습니다.\n\n"
     
-    first_title = "" # 파일명용 변수
+    first_title = "" 
 
     for category, rss_url in sources.items():
         markdown += f"## {category}\n"
         
         try:
             feed = feedparser.parse(rss_url)
-            # 분야별 상위 2개 기사만 선정 (퀄리티 집중)
-            for entry in feed.entries[:2]:
+            # 분야별 최신 기사 2~3개 선정
+            count = 0
+            for entry in feed.entries:
+                if count >= 2: break # 분야별 2개만 (너무 길어짐 방지)
                 
-                # (1) 기사 원문 내용 추출
-                original_summary = get_article_summary(entry.link)
+                # (1) 본문 내용 가져오기
+                content_summary = get_article_content(entry.link)
                 
-                # 추출 실패시 RSS의 기본 설명으로 대체
-                if len(original_summary) < 50:
-                    original_summary = entry.description if 'description' in entry else entry.title
+                # 본문 추출에 실패했으면 RSS 기본 설명 사용
+                if not content_summary:
+                    if 'description' in entry:
+                        content_summary = re.sub('<[^<]+?>', '', entry.description)[:200] + "..."
+                    else:
+                        continue # 내용이 아예 없으면 건너뜀
 
-                # (2) 한국어 번역 및 다듬기
-                title_kr = entry.title
-                summary_kr = original_summary
-                
-                # 해외 사이트(영어)인 경우 번역 실행
-                if "technologyreview" in rss_url or "nytimes" in rss_url:
-                    try:
-                        title_kr = translator.translate(entry.title, dest='ko').text
-                        # 내용이 너무 길면 앞부분 400자만 번역 (속도 및 가독성)
-                        summary_to_translate = original_summary[:1000] 
-                        summary_kr = translator.translate(summary_to_translate, dest='ko').text
-                    except:
-                        pass
-                
-                # (3) 텍스트 정제 (HTML 태그 삭제 등)
-                title_kr = re.sub(r'[\[\]]', '', title_kr) # 대괄호 제거
-                summary_kr = re.sub('<[^<]+?>', '', summary_kr) # HTML 태그 제거
-                summary_kr = clean_text(summary_kr)
-                
-                # 요약문 길이 조절 (너무 길지 않게, 서술형 느낌)
-                if len(summary_kr) > 250:
-                    summary_kr = summary_kr[:250] + "..."
-                
-                # (4) 출력 포맷 적용 (제목: 내용 스타일)
-                markdown += f"**{title_kr}**: {summary_kr}\n\n"
+                # (2) 출력 포맷: [제목](링크) + 내용
+                markdown += f"### 🔗 [{entry.title}]({entry.link})\n"
+                markdown += f"> {content_summary}\n\n"
 
                 # 파일명 생성용 (첫 기사 제목)
                 if not first_title:
-                    first_title = re.sub(r'[^가-힣a-zA-Z0-9]', '', title_kr)[:15]
+                    first_title = re.sub(r'[^가-힣a-zA-Z0-9]', '', entry.title)[:15]
+                
+                count += 1
 
         except Exception as e:
             print(f"Error processing {category}: {e}")
@@ -97,13 +89,13 @@ def fetch_and_format_news():
 
     # 3. 푸터 작성
     markdown += "---\n"
-    markdown += "### 📂 기록 안내\n"
-    markdown += f"위 내용은 사용자님의 요청에 따라 GitHub Actions를 통해 자동 생성되어 Obsidian으로 동기화됩니다.\n"
+    markdown += "### 📂 자동화 기록 안내\n"
+    markdown += f"위 내용은 GitHub Actions를 통해 국내 언론사 RSS에서 실시간으로 수집되었습니다.\n"
     
     return f"{today_str}_{first_title}.md", markdown
 
 if __name__ == "__main__":
-    filename, content = fetch_and_format_news()
+    filename, content = fetch_korean_news()
     with open(filename, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"File created: {filename}")
