@@ -2,8 +2,8 @@ name: Daily Economy News Bot
 
 on:
   schedule:
-    - cron: '0 23 * * *' # UTC 기준 23시 = 한국 시간(KST) 오전 8시
-  workflow_dispatch: # 수동 실행 버튼 활성화
+    - cron: '0 23 * * *' # 한국 시간 매일 오전 8시 (UTC 23:00)
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,20 +19,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install feedparser newspaper3k lxml_html_clean nltk
+          pip install feedparser trafilatura lxml_html_clean
 
       - name: Run script
         run: python main.py
 
       - name: Commit and Push
         env:
-          # 저장소 Secret에 저장한 그 열쇠를 불러옵니다.
           MY_SAFE_TOKEN: ${{ secrets.GH_TOKEN }} 
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Update daily news: $(date +'%Y-%m-%d')" || exit 0
-          
-          # 보안 강화: 토큰을 주소에 명시하여 '인증된 사용자'임을 확실히 합니다.
           git push https://x-access-token:${MY_SAFE_TOKEN}@github.com/${{ github.repository }}.git main
