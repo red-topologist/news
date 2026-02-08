@@ -95,6 +95,43 @@ CATEGORY_KEYWORDS: Dict[str, List[str]] = {
         "입시",
         "curriculum",
     ],
+    "🏠 부동산": [
+        "부동산",
+        "주택",
+        "전세",
+        "월세",
+        "매매",
+        "집값",
+        "real estate",
+        "housing",
+        "mortgage",
+        "property",
+    ],
+    "📈 주식": [
+        "주식",
+        "증시",
+        "코스피",
+        "코스닥",
+        "stocks",
+        "equity",
+        "shares",
+        "earnings",
+        "ipo",
+        "nasdaq",
+        "s&p",
+    ],
+    "₿ 암호화폐 (비트코인)": [
+        "암호화폐",
+        "가상자산",
+        "비트코인",
+        "이더리움",
+        "crypto",
+        "bitcoin",
+        "ethereum",
+        "blockchain",
+        "token",
+        "etf",
+    ],
 }
 
 NOISE_PATTERNS = [
@@ -148,11 +185,7 @@ NEWS_SOURCES: Dict[str, List[FeedSource]] = {
         ),
         FeedSource("VentureBeat AI", "https://venturebeat.com/category/ai/feed/", 1.1),
         FeedSource("Wired AI", "https://www.wired.com/feed/tag/ai/latest/rss", 1.1),
-        FeedSource(
-            "AI News",
-            "https://www.artificialintelligence-news.com/feed/",
-            1.0,
-        ),
+        FeedSource("AI News", "https://www.artificialintelligence-news.com/feed/", 1.0),
         FeedSource(
             "The Verge AI",
             "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
@@ -186,7 +219,43 @@ NEWS_SOURCES: Dict[str, List[FeedSource]] = {
             0.9,
         ),
     ],
+    "🏠 부동산": [
+        FeedSource("한경 부동산", "https://www.hankyung.com/feed/realestate", 1.0),
+        FeedSource("CNBC Real Estate", "https://www.cnbc.com/id/10000115/device/rss/rss.html", 1.05),
+        FeedSource("Realtor.com", "https://www.realtor.com/news/feed/", 1.0),
+        FeedSource("HousingWire", "https://www.housingwire.com/feed/", 1.0),
+        FeedSource("NYT Real Estate", "https://rss.nytimes.com/services/xml/rss/nyt/RealEstate.xml", 0.95),
+        FeedSource("PropertyWire", "https://www.propertywire.com/feed/", 0.9),
+    ],
+    "📈 주식": [
+        FeedSource("한경 증권", "https://www.hankyung.com/feed/finance", 1.0),
+        FeedSource("CNBC Markets", "https://www.cnbc.com/id/100003114/device/rss/rss.html", 1.05),
+        FeedSource("Yahoo Finance", "https://finance.yahoo.com/news/rssindex", 1.0),
+        FeedSource("NASDAQ Markets", "https://www.nasdaq.com/feed/rssoutbound?category=Markets", 1.0),
+        FeedSource("MarketWatch", "https://feeds.marketwatch.com/marketwatch/topstories/", 0.95),
+        FeedSource("Investing.com Markets", "https://www.investing.com/rss/news_25.rss", 0.9),
+    ],
+    "₿ 암호화폐 (비트코인)": [
+        FeedSource("CoinDesk", "https://www.coindesk.com/arc/outboundfeeds/rss/", 1.1),
+        FeedSource("Cointelegraph", "https://cointelegraph.com/rss", 1.05),
+        FeedSource("Decrypt", "https://decrypt.co/feed", 1.0),
+        FeedSource("The Block", "https://www.theblock.co/rss.xml", 1.0),
+        FeedSource("Bitcoin Magazine", "https://bitcoinmagazine.com/.rss/full/", 0.95),
+        FeedSource("Bitcoin.com", "https://news.bitcoin.com/feed/", 0.9),
+    ],
 }
+
+CORE_BRIEFING_CATEGORIES = [
+    "🤖 인공지능 (AI)",
+    "💰 경제",
+    "🎓 교육",
+]
+
+MARKET_BRIEFING_CATEGORIES = [
+    "🏠 부동산",
+    "📈 주식",
+    "₿ 암호화폐 (비트코인)",
+]
 
 
 def get_korea_time() -> datetime.datetime:
@@ -801,17 +870,23 @@ def select_diverse_articles(candidates: List[ArticleCandidate], limit: int) -> L
 # ---------------------------------------------------------
 # 2. 메인 로직
 # ---------------------------------------------------------
-def fetch_news():
-    now = get_korea_time()
-    edition_tag, window_start, window_end = get_edition_window(now)
-
+def build_briefing(
+    now: datetime.datetime,
+    edition_tag: str,
+    window_start: datetime.datetime,
+    window_end: datetime.datetime,
+    domain_history: Dict[str, int],
+    categories: List[str],
+    title_label: str,
+    tag_tokens: List[str],
+    file_suffix: str,
+) -> Tuple[str, str]:
     today_str = now.strftime("%Y-%m-%d")
     time_str = now.strftime("%I:%M:%S")
 
     news_content = ""
     headlines: List[str] = []
     globally_seen = set()
-    domain_history = load_recent_domain_counts()
 
     selection_note = (
         "> 선택 기준: {start} ~ {end} (KST) 발행 기사만 사용\n\n".format(
@@ -821,8 +896,13 @@ def fetch_news():
     )
     news_content += selection_note
 
-    for category, feed_sources in NEWS_SOURCES.items():
+    for category in categories:
+        feed_sources = NEWS_SOURCES.get(category, [])
         news_content += "## {}\n".format(category)
+
+        if not feed_sources:
+            news_content += "> ⚠️ 설정된 RSS 소스 없음\n\n"
+            continue
 
         candidates = collect_candidates(
             category=category,
@@ -870,18 +950,19 @@ def fetch_news():
             news_content += summary + "\n\n"
 
     headline_str = " / ".join(headlines) if headlines else "주요 뉴스 브리핑"
+    tag_line = ", ".join(["뉴스", edition_tag] + tag_tokens)
 
     frontmatter = f"""---
 date: {today_str}
 time: \"{time_str}\"
 type: insight
-tags: [뉴스, {edition_tag}, AI, 경제, 교육]
+tags: [{tag_line}]
 created_at: \"{today_str} {time_str}\"
 edition_cutoff_kst: \"{window_end.strftime('%Y-%m-%d %H:%M:%S')}\"
 selection_window_kst: \"{window_start.strftime('%Y-%m-%d %H:%M:%S')} ~ {window_end.strftime('%Y-%m-%d %H:%M:%S')}\"
 ---
 
-# 📅 {today_str} {edition_tag} 브리핑: {headline_str}
+# 📅 {today_str} {edition_tag} {title_label}: {headline_str}
 
 """
 
@@ -889,12 +970,54 @@ selection_window_kst: \"{window_start.strftime('%Y-%m-%d %H:%M:%S')} ~ {window_e
     final_content += "---\n"
     final_content += "✅ **최종 업데이트(한국시간):** {} {}\n".format(today_str, time_str)
 
-    filename = "{}_{}_{}_Daily_News_Briefing.md".format(today_str, edition_tag, time_str)
+    filename = "{}_{}_{}_{}.md".format(today_str, edition_tag, time_str, file_suffix)
     return filename, final_content
 
 
+def fetch_news() -> List[Tuple[str, str]]:
+    now = get_korea_time()
+    edition_tag, window_start, window_end = get_edition_window(now)
+    domain_history = load_recent_domain_counts()
+
+    plans = [
+        (
+            "AI_Economy_Education_Daily_News_Briefing",
+            "AI·경제·교육 브리핑",
+            CORE_BRIEFING_CATEGORIES,
+            ["AI", "경제", "교육"],
+        ),
+        (
+            "RealEstate_Stocks_Crypto_Daily_News_Briefing",
+            "부동산·주식·암호화폐 브리핑",
+            MARKET_BRIEFING_CATEGORIES,
+            ["부동산", "주식", "암호화폐", "비트코인"],
+        ),
+    ]
+
+    outputs: List[Tuple[str, str]] = []
+    for suffix, title_label, categories, tags in plans:
+        outputs.append(
+            build_briefing(
+                now=now,
+                edition_tag=edition_tag,
+                window_start=window_start,
+                window_end=window_end,
+                domain_history=domain_history,
+                categories=categories,
+                title_label=title_label,
+                tag_tokens=tags,
+                file_suffix=suffix,
+            )
+        )
+
+    return outputs
+
+
 if __name__ == "__main__":
-    filename, content = fetch_news()
-    with open(filename, "w", encoding="utf-8") as file:
-        file.write(content)
-    print("File Created: {}".format(filename))
+    results = fetch_news()
+    created: List[str] = []
+    for filename, content in results:
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write(content)
+        created.append(filename)
+    print("Files Created: {}".format(", ".join(created)))
