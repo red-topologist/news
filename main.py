@@ -1,8 +1,9 @@
 import datetime
+import email.utils
 import glob
-import math
 import html
 import json
+import math
 import os
 import re
 import ssl
@@ -10,7 +11,7 @@ import time
 import urllib.request
 from dataclasses import dataclass
 from datetime import timedelta, timezone
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 import feedparser
@@ -38,6 +39,14 @@ FEED_MAX_RETRIES = int(os.getenv("FEED_MAX_RETRIES", "2"))
 HISTORY_WINDOW_FILES = int(os.getenv("HISTORY_WINDOW_FILES", "14"))
 DOMAIN_REPEAT_PENALTY = float(os.getenv("DOMAIN_REPEAT_PENALTY", "0.45"))
 DEBUG_FEED_ERRORS = os.getenv("DEBUG_FEED_ERRORS", "0") == "1"
+
+# 발행 시각 기반 필터링 규칙
+STRICT_SAME_DAY_PUBLICATION = os.getenv("STRICT_SAME_DAY_PUBLICATION", "1") == "1"
+REQUIRE_PUBLISHED_TIMESTAMP = os.getenv("REQUIRE_PUBLISHED_TIMESTAMP", "1") == "1"
+MORNING_CUTOFF_HOUR = int(os.getenv("MORNING_CUTOFF_HOUR", "8"))
+EVENING_CUTOFF_HOUR = int(os.getenv("EVENING_CUTOFF_HOUR", "17"))
+
+# 번역 옵션
 TRANSLATE_FOREIGN_TO_KO = os.getenv("TRANSLATE_FOREIGN_TO_KO", "1") == "1"
 TRANSLATION_PROVIDER = os.getenv("TRANSLATION_PROVIDER", "auto").lower()
 TRANSLATE_TIMEOUT_SECONDS = int(os.getenv("TRANSLATE_TIMEOUT_SECONDS", "10"))
@@ -190,6 +199,36 @@ def get_ssl_context():
     return ssl.create_default_context()
 
 
+def get_edition_window(now: datetime.datetime) -> Tuple[str, datetime.datetime, datetime.datetime]:
+    day_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    if now.hour < 12:
+        edition_tag = "오전"
+        configured_end = day_start + timedelta(hours=MORNING_CUTOFF_HOUR)
+    else:
+        edition_tag = "오후"
+        configured_end = day_start + timedelta(hours=EVENING_CUTOFF_HOUR)
+
+    # 수동 실행으로 컷오프 이전에 돌렸을 때는 현재 시각까지만 허용
+    window_end = min(now, configured_end)
+    window_start = day_start
+    return edition_tag, window_start, window_end
+
+
+def article_in_publish_window(
+    published_at: Optional[datetime.datetime],
+    window_start: datetime.datetime,
+    window_end: datetime.datetime,
+) -> bool:
+    if not published_at:
+        return not REQUIRE_PUBLISHED_TIMESTAMP
+
+    if STRICT_SAME_DAY_PUBLICATION:
+        return window_start <= published_at <= window_end
+
+    return published_at <= window_end
+
+
 def contains_korean(text: str) -> bool:
     return bool(re.search(r"[가-힣]", text))
 
@@ -206,14 +245,7 @@ def call_papago_translate(text: str) -> Optional[str]:
     if not PAPAGO_CLIENT_ID or not PAPAGO_CLIENT_SECRET:
         return None
 
-    payload = urlencode(
-        {
-            "source": "en",
-            "target": "ko",
-            "text": text,
-        }
-    ).encode("utf-8")
-
+    payload = urlencode({"source": "en", "target": "ko", "text": text}).encode("utf-8")
     request = urllib.request.Request(
         "https://openapi.naver.com/v1/papago/n2mt",
         data=payload,
@@ -250,7 +282,6 @@ def call_public_google_translate(text: str) -> Optional[str]:
             "q": text,
         }
     )
-
     url = "https://translate.googleapis.com/translate_a/single?{}".format(query)
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
 
@@ -440,6 +471,30 @@ def resolve_entry_link(entry) -> str:
     return link
 
 
+def parse_datetime_string(raw_value: str) -> Optional[datetime.datetime]:
+    text = (raw_value or "").strip()
+    if not text:
+        return None
+
+    try:
+        dt = email.utils.parsedate_to_datetime(text)
+        if dt:
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=datetime.timezone.utc)
+            return dt.astimezone(KST)
+    except Exception:
+        pass
+
+    iso_candidate = text.replace("Z", "+00:00")
+    try:
+        dt = datetime.datetime.fromisoformat(iso_candidate)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=datetime.timezone.utc)
+        return dt.astimezone(KST)
+    except Exception:
+        return None
+
+
 def parse_entry_datetime(entry) -> Optional[datetime.datetime]:
     for key in ("published_parsed", "updated_parsed", "created_parsed"):
         value = entry.get(key)
@@ -449,6 +504,14 @@ def parse_entry_datetime(entry) -> Optional[datetime.datetime]:
                 return dt_utc.astimezone(KST)
             except Exception:
                 continue
+
+    for key in ("published", "updated", "created", "dc:date"):
+        value = entry.get(key)
+        if isinstance(value, str):
+            parsed = parse_datetime_string(value)
+            if parsed:
+                return parsed
+
     return None
 
 
@@ -474,20 +537,18 @@ def load_recent_domain_counts() -> Dict[str, int]:
     return counts
 
 
-def recency_score(published_at: Optional[datetime.datetime], now: datetime.datetime) -> float:
+def recency_score(published_at: Optional[datetime.datetime], ranking_time: datetime.datetime) -> float:
     if not published_at:
-        return 0.3
+        return 0.0
 
-    age_hours = max((now - published_at).total_seconds() / 3600, 0)
-    if age_hours <= 6:
-        return 2.3
+    age_hours = max((ranking_time - published_at).total_seconds() / 3600, 0)
+    if age_hours <= 3:
+        return 2.4
+    if age_hours <= 8:
+        return 1.8
     if age_hours <= 24:
-        return 1.6
-    if age_hours <= 48:
         return 1.0
-    if age_hours <= 96:
-        return 0.4
-    return -0.2
+    return 0.3
 
 
 def relevance_score(category: str, title: str, summary_hint: str) -> float:
@@ -519,8 +580,6 @@ def quality_score(title: str, summary_hint: str) -> float:
 def domain_history_penalty(domain: str, domain_history: Dict[str, int]) -> float:
     if not domain:
         return 0.0
-
-    # 빈번하게 반복된 도메인은 로그 스케일로 완만하게 감점
     repeats = domain_history.get(domain, 0)
     return min(math.log1p(repeats) * DOMAIN_REPEAT_PENALTY, 1.6)
 
@@ -533,11 +592,11 @@ def score_entry(
     published_at: Optional[datetime.datetime],
     domain: str,
     domain_history: Dict[str, int],
-    now: datetime.datetime,
+    ranking_time: datetime.datetime,
 ) -> float:
     return (
         source_weight
-        + recency_score(published_at, now)
+        + recency_score(published_at, ranking_time)
         + relevance_score(category, title, summary_hint)
         + quality_score(title, summary_hint)
         - domain_history_penalty(domain, domain_history)
@@ -602,7 +661,9 @@ def get_clean_summary(url: str, fallback_text: str) -> str:
         pass
 
     fallback = extract_summary_sentences(
-        strip_html(fallback_text), max_sentences=2, max_chars=220
+        strip_html(fallback_text),
+        max_sentences=2,
+        max_chars=220,
     )
     return fallback if fallback else "> 요약 없음."
 
@@ -611,7 +672,9 @@ def collect_candidates(
     category: str,
     feed_sources: List[FeedSource],
     domain_history: Dict[str, int],
-    now: datetime.datetime,
+    window_start: datetime.datetime,
+    window_end: datetime.datetime,
+    ranking_time: datetime.datetime,
 ) -> List[ArticleCandidate]:
     candidates: List[ArticleCandidate] = []
 
@@ -631,8 +694,11 @@ def collect_candidates(
             normalized_title = normalize_title(title)
             summary_hint = strip_html(entry.get("summary") or entry.get("description", ""))
             published_at = parse_entry_datetime(entry)
-            domain = extract_domain(link)
 
+            if not article_in_publish_window(published_at, window_start, window_end):
+                continue
+
+            domain = extract_domain(link)
             score = score_entry(
                 category=category,
                 title=title,
@@ -641,7 +707,7 @@ def collect_candidates(
                 published_at=published_at,
                 domain=domain,
                 domain_history=domain_history,
-                now=now,
+                ranking_time=ranking_time,
             )
 
             candidates.append(
@@ -719,7 +785,6 @@ def select_diverse_articles(candidates: List[ArticleCandidate], limit: int) -> L
         domain_counts[candidate.domain] = domain_counts.get(candidate.domain, 0) + 1
         source_counts[candidate.source_name] = source_counts.get(candidate.source_name, 0) + 1
 
-    # 도메인 제한으로 기사 수가 부족하면 남은 점수 순으로 보충
     if len(selected) < limit:
         for candidate in candidates:
             if len(selected) >= limit:
@@ -738,19 +803,35 @@ def select_diverse_articles(candidates: List[ArticleCandidate], limit: int) -> L
 # ---------------------------------------------------------
 def fetch_news():
     now = get_korea_time()
+    edition_tag, window_start, window_end = get_edition_window(now)
+
     today_str = now.strftime("%Y-%m-%d")
     time_str = now.strftime("%I:%M:%S")
-    time_tag = "오전" if now.hour < 12 else "오후"
 
     news_content = ""
     headlines: List[str] = []
     globally_seen = set()
     domain_history = load_recent_domain_counts()
 
+    selection_note = (
+        "> 선택 기준: {start} ~ {end} (KST) 발행 기사만 사용\n\n".format(
+            start=window_start.strftime("%Y-%m-%d %H:%M"),
+            end=window_end.strftime("%Y-%m-%d %H:%M"),
+        )
+    )
+    news_content += selection_note
+
     for category, feed_sources in NEWS_SOURCES.items():
         news_content += "## {}\n".format(category)
 
-        candidates = collect_candidates(category, feed_sources, domain_history, now)
+        candidates = collect_candidates(
+            category=category,
+            feed_sources=feed_sources,
+            domain_history=domain_history,
+            window_start=window_start,
+            window_end=window_end,
+            ranking_time=window_end,
+        )
         candidates = dedupe_candidates(candidates)
         selected = select_diverse_articles(candidates, MAX_ITEMS_PER_CATEGORY)
 
@@ -758,7 +839,12 @@ def fetch_news():
             headline_base = translate_text_to_korean(selected[0].title)
             headlines.append(headline_base[:15] + "..." if len(headline_base) > 15 else headline_base)
         else:
-            news_content += "> ⚠️ 수집된 기사 없음\n\n"
+            news_content += (
+                "> ⚠️ 해당 시간창({} ~ {})에 발행된 기사 없음\n\n".format(
+                    window_start.strftime("%H:%M"),
+                    window_end.strftime("%H:%M"),
+                )
+            )
             continue
 
         for article in selected:
@@ -772,7 +858,14 @@ def fetch_news():
 
             domain_label = article.domain or "unknown"
             title_for_output = translate_title_for_output(article.title)
+
             news_content += "### 🔗 [{}]({})\n".format(title_for_output, article.link)
+            if article.published_at:
+                news_content += "> 발행시각(KST): {}\n".format(
+                    article.published_at.strftime("%Y-%m-%d %H:%M")
+                )
+            else:
+                news_content += "> 발행시각(KST): 알 수 없음\n"
             news_content += "> 출처: {} ({})\n".format(article.source_name, domain_label)
             news_content += summary + "\n\n"
 
@@ -782,11 +875,13 @@ def fetch_news():
 date: {today_str}
 time: \"{time_str}\"
 type: insight
-tags: [뉴스, {time_tag}, AI, 경제, 교육]
+tags: [뉴스, {edition_tag}, AI, 경제, 교육]
 created_at: \"{today_str} {time_str}\"
+edition_cutoff_kst: \"{window_end.strftime('%Y-%m-%d %H:%M:%S')}\"
+selection_window_kst: \"{window_start.strftime('%Y-%m-%d %H:%M:%S')} ~ {window_end.strftime('%Y-%m-%d %H:%M:%S')}\"
 ---
 
-# 📅 {today_str} {time_tag} 브리핑: {headline_str}
+# 📅 {today_str} {edition_tag} 브리핑: {headline_str}
 
 """
 
@@ -794,7 +889,7 @@ created_at: \"{today_str} {time_str}\"
     final_content += "---\n"
     final_content += "✅ **최종 업데이트(한국시간):** {} {}\n".format(today_str, time_str)
 
-    filename = "{}_{}_{}_Daily_News_Briefing.md".format(today_str, time_tag, time_str)
+    filename = "{}_{}_{}_Daily_News_Briefing.md".format(today_str, edition_tag, time_str)
     return filename, final_content
 
 
