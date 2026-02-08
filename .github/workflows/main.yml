@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install feedparser trafilatura lxml_html_clean
+          pip install feedparser trafilatura lxml_html_clean certifi
 
       - name: Run script
         run: python main.py
