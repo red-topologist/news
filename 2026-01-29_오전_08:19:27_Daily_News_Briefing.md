@@ -1,18 +1,36 @@
 ---
-date created: '2026-01-29 08:19:27'
-last_linked: '2026-02-11T12:25:09'
+date created: 2026-01-29 08:19:27
+last_linked: 2026-02-11T12:25:09
 related:
-- '[[100-Insight/110-News_briefing/2026-02-02_오전_08:17:10_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-02-05_오전_08:19:02_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-30_오전_08:18:50_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-02-08_오후_09:48:11_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-02-08_오후_10:28:30_AI_Economy_Education_Daily_News_Briefing]]'
+  - "[[100-Insight/110-News_briefing/2026-02-02_오전_08:17:10_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-02-05_오전_08:19:02_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-30_오전_08:18:50_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-02-08_오후_09:48:11_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-02-08_오후_10:28:30_AI_Economy_Education_Daily_News_Briefing]]"
 tags:
-- 뉴스
-- 오전
-- AI
-- 경제
-- 교육
+  - 2027년
+  - 경제
+  - 교육
+  - 뉴스
+  - 무룡고
+  - 샘
+  - 언양고
+  - 오전
+  - 오픈AI
+  - 학성고
+  - AI
+  - OpenAI
+topic: "📅 2026-01-29 오전 브리핑: [1월28일] 미 국방부 \"... / '역대 최고실적' 삼성전자,... / [단독] [2025진학률] ..."
+linked:
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing 1]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_The_Download_why_LLMs_are]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26-economy-summary]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:29:20_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오후_05:32:00_Daily_News_Briefing]]"
+index: 100-Insight
 ---
 
 # 📅 2026-01-29 오전 브리핑: [1월28일] 미 국방부 "... / '역대 최고실적' 삼성전자,... / [단독] [2025진학률] ...

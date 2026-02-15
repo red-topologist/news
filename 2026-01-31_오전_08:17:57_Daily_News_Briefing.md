@@ -1,18 +1,29 @@
 ---
-date created: '2026-01-31 08:17:57'
-last_linked: '2026-02-11T12:25:09'
+date created: 2026-01-31 08:17:57
+last_linked: 2026-02-11T12:25:09
 related:
-- '[[100-Insight/110-News_briefing/2026-02-08_오후_10:28:30_AI_Economy_Education_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-02-08_오후_09:55:58_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-30_오전_08:18:50_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-02-02_오전_08:17:10_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-02-09_오후_05:52:42_AI_Economy_Education_Daily_News_Briefing]]'
+  - "[[100-Insight/110-News_briefing/2026-02-08_오후_10:28:30_AI_Economy_Education_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-02-08_오후_09:55:58_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-30_오전_08:18:50_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-02-02_오전_08:17:10_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-02-09_오후_05:52:42_AI_Economy_Education_Daily_News_Briefing]]"
 tags:
-- 뉴스
-- 오전
-- AI
-- 경제
-- 교육
+  - 경제
+  - 교육
+  - 뉴스
+  - 오전
+  - AI
+topic: '📅 2026-01-31 오전 브리핑: [1월30일] 카르파티 "지... / "이러면 큰일 나요"…다이소... / [단독] 2026서울대 합격...'
+linked:
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing 1]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_The_Download_why_LLMs_are]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26-economy-summary]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:29:20_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오후_05:32:00_Daily_News_Briefing]]"
+index: 100-Insight
 ---
 
 # 📅 2026-01-31 오전 브리핑: [1월30일] 카르파티 "지... / "이러면 큰일 나요"…다이소... / [단독] 2026서울대 합격...

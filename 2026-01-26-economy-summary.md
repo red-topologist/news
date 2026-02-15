@@ -1,15 +1,26 @@
 ---
-last_linked: '2026-02-11T12:25:09'
+last_linked: 2026-02-11T12:25:09
 related:
-- '[[100-Insight/2025-12-23 외환위기-인사이트리포트-20251222]]'
-- '[[400-AI talk/430-Gemini talk/_주식 투자 방향 및 종목 추천 .md]]'
-- '[[100-Insight/110-News_briefing/2026-02-09_오전_08:22:24_RealEstate_Stocks_Crypto_Daily_News_Briefing]]'
-- '[[400-AI talk/430-Gemini talk/_비트코인 급락 이유 논의 .md]]'
-- '[[400-AI talk/430-Gemini talk/_해외 거래소 규제와 외화 유출 방지 .md]]'
+  - "[[100-Insight/2025-12-23 외환위기-인사이트리포트-20251222]]"
+  - "[[400-AI talk/430-Gemini talk/_주식 투자 방향 및 종목 추천 .md]]"
+  - "[[100-Insight/110-News_briefing/2026-02-09_오전_08:22:24_RealEstate_Stocks_Crypto_Daily_News_Briefing]]"
+  - "[[400-AI talk/430-Gemini talk/_비트코인 급락 이유 논의 .md]]"
+  - "[[400-AI talk/430-Gemini talk/_해외 거래소 규제와 외화 유출 방지 .md]]"
 tags:
-- 경제
-- 뉴스
-- 자동화
+  - 경제
+  - 뉴스
+  - 자동화
+topic: 📅 2026-01-26 경제 뉴스 브리핑
+linked:
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing 1]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_The_Download_why_LLMs_are]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:29:20_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오후_05:32:00_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-28_오전_08:14:36_Daily_News_Briefing]]"
+index: 100-Insight
 ---
 
 # 📅 2026-01-26 경제 뉴스 브리핑

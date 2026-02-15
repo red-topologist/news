@@ -1,18 +1,34 @@
 ---
-date created: '2026-01-28 08:14:36'
-last_linked: '2026-02-11T12:25:09'
+date created: 2026-01-28 08:14:36
+last_linked: 2026-02-11T12:25:09
 related:
-- '[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-27_오전_09:29:20_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-30_오전_08:18:50_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-02-02_오전_08:17:10_Daily_News_Briefing]]'
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:29:20_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-30_오전_08:18:50_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-02-02_오전_08:17:10_Daily_News_Briefing]]"
 tags:
-- 뉴스
-- 오전
-- AI
-- 경제
-- 교육
+  - 경제
+  - 교육
+  - 뉴스
+  - 레모네이드
+  - 보험료
+  - 오전
+  - 자율주행
+  - 테슬라
+  - AI
+  - FSD
+topic: "📅 2026-01-28 오전 브리핑: [1월27일] 세계 시장으로... / 연세유업, 보성산 말차 담은... / [단독] [2025진학률] ..."
+linked:
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing 1]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_The_Download_why_LLMs_are]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26-economy-summary]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:29:20_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오후_05:32:00_Daily_News_Briefing]]"
+index: 100-Insight
 ---
 
 # 📅 2026-01-28 오전 브리핑: [1월27일] 세계 시장으로... / 연세유업, 보성산 말차 담은... / [단독] [2025진학률] ...

@@ -1,18 +1,33 @@
 ---
-date created: '2026-01-30 08:18:50'
-last_linked: '2026-02-11T12:25:09'
+date created: 2026-01-30 08:18:50
+last_linked: 2026-02-11T12:25:09
 related:
-- '[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-28_오전_08:14:36_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-02-07_오전_08:17:31_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-02-02_오전_08:17:10_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-02-08_오후_10:28:30_AI_Economy_Education_Daily_News_Briefing]]'
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-28_오전_08:14:36_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-02-07_오전_08:17:31_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-02-02_오전_08:17:10_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-02-08_오후_10:28:30_AI_Economy_Education_Daily_News_Briefing]]"
 tags:
-- 뉴스
-- 오전
-- AI
-- 경제
-- 교육
+  - 경제
+  - 교육
+  - 뉴스
+  - 문샷
+  - 병렬구조
+  - 오전
+  - 키미
+  - AI
+  - Kimi
+topic: "📅 2026-01-30 오전 브리핑: [1월29일] 세계 5·12... / [속보] 작년 12월 산업생... / 충북대 충북지역 순환경제 네..."
+linked:
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing 1]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_The_Download_why_LLMs_are]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26-economy-summary]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:29:20_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오후_05:32:00_Daily_News_Briefing]]"
+index: 100-Insight
 ---
 
 # 📅 2026-01-30 오전 브리핑: [1월29일] 세계 5·12... / [속보] 작년 12월 산업생... / 충북대 충북지역 순환경제 네...

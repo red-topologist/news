@@ -1,18 +1,32 @@
 ---
-date created: '2026-01-27 09:29:20 +09:00'
-last_linked: '2026-02-11T12:25:09'
+date created: 2026-01-27 09:29:20 +09:00
+last_linked: 2026-02-11T12:25:09
 related:
-- '[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-28_오전_08:14:36_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-02-07_오전_08:17:31_Daily_News_Briefing]]'
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-28_오전_08:14:36_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-02-07_오전_08:17:31_Daily_News_Briefing]]"
 tags:
-- 뉴스
-- 오전
-- AI
-- 경제
-- 교육
+  - 경제
+  - 교육
+  - 기어다니는
+  - 뉴스
+  - 로봇
+  - 아담스
+  - 오전
+  - AI
+topic: "📅 2026-01-27 오전 브리핑: [1월26일] 급발전하는 음... / 홈플러스 달큰한 '진도 겨울... / [알고보자] 대입 수능이 가..."
+linked:
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing 1]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_The_Download_why_LLMs_are]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26-economy-summary]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:17:13_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오후_05:32:00_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-28_오전_08:14:36_Daily_News_Briefing]]"
+index: 100-Insight
 ---
 
 # 📅 2026-01-27 오전 브리핑: [1월26일] 급발전하는 음... / 홈플러스 달큰한 '진도 겨울... / [알고보자] 대입 수능이 가...

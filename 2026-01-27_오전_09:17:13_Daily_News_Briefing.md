@@ -1,16 +1,31 @@
 ---
-date created: '2026-01-27 09:17:13'
-last_linked: '2026-02-11T12:25:09'
+date created: 2026-01-27 09:17:13
+last_linked: 2026-02-11T12:25:09
 related:
-- '[[100-Insight/110-News_briefing/2026-01-27_오전_09:29:20_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-28_오전_08:14:36_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-30_오전_08:18:50_Daily_News_Briefing]]'
-- '[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing]]'
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:29:20_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-28_오전_08:14:36_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-30_오전_08:18:50_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing]]"
 tags:
-- 뉴스
-- 오전
-- 자동화
+  - 기어다니는
+  - 뉴스
+  - 로봇
+  - 아담스
+  - 오전
+  - 자동화
+  - AI
+topic: "📅 2026-01-27 오전 브리핑: [1월26일] 급발전하는 음... / “케데헌 '골든'일 줄 알았... / [알고보자] 대입 수능이 가..."
+linked:
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing 1]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26_The_Download_why_LLMs_are]]"
+  - "[[100-Insight/110-News_briefing/2026-01-26-economy-summary]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:29:20_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오전_09:30:22_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-27_오후_05:32:00_Daily_News_Briefing]]"
+  - "[[100-Insight/110-News_briefing/2026-01-28_오전_08:14:36_Daily_News_Briefing]]"
+index: 100-Insight
 ---
 
 # 📅 2026-01-27 오전 브리핑: [1월26일] 급발전하는 음... / “케데헌 '골든'일 줄 알았... / [알고보자] 대입 수능이 가...
